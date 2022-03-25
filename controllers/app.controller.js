@@ -70,7 +70,10 @@ exports.login = async (req, res) => {
     }
 };
 
-exports.welcome = (req, res) => {
-    console.log(req.user)
-    res.status(200).send('Welcome');
+exports.welcome = (req, res) => { 
+    try {
+        res.status(200).json(req.user);
+    } catch (error) {
+        console.log(error);
+    }
 };

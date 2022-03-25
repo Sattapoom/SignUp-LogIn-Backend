@@ -7,7 +7,7 @@ module.exports = app => {
 
     router.post("/login", controller.login);
 
-    router.get("/welcome", auth, controller.welcome);
+    router.post("/welcome", auth, controller.welcome);
 
     app.use('/',router);
 }
