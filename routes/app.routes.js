@@ -9,5 +9,11 @@ module.exports = app => {
 
     router.post("/welcome", auth, controller.welcome);
 
+    router.put("/game/join", auth, controller.joinGame);
+
+    router.put("/game/quit", auth, controller.quitGame);
+
+    router.get("/game/onlines", controller.getGameState);
+
     app.use('/',router);
 }
