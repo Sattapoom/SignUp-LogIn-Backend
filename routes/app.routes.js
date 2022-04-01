@@ -13,7 +13,11 @@ module.exports = app => {
 
     router.put("/game/quit", auth, controller.quitGame);
 
-    router.get("/game/onlines", controller.getGameState);
+    router.get("/game/getState", controller.getGameState);
+
+    router.put("/game/updateState", controller.updateGameState);
+
+    router.put("/game/rollDice", auth, controller.rollDice);
 
     app.use('/',router);
 }

@@ -79,13 +79,17 @@ exports.welcome = (req, res) => {
 };
 
 var onlines = [];
+var playersData = [];
+var dicedNum = 0;
+var latestRoller = '';
 
 exports.joinGame = async (req, res) => {
     try {
         if (onlines.indexOf(req.user.username) === -1) {
             onlines.push(req.user.username);
+            playersData.push({ username: req.user.username, piecePos: { x: 0, y: 0 } })
         }
-        await res.status(200).json({ players: onlines });
+        await res.status(200).json({ gameState: { playersData: playersData } });
     } catch (error) {
         console.log(error);
     }
@@ -96,10 +100,17 @@ exports.quitGame = (req, res) => {
         var userIndex = onlines.indexOf(req.user.username);
         if (userIndex !== -1) {
             onlines.splice(userIndex, 1);
+            playersData.splice(userIndex, 1);
             res.status(200).send(`${req.user.username} has left the game.`);
         }
-        else{
+        else {
             res.status(200).send(`${req.user.username} was not in the game in the first place.`);
+        }
+        if (onlines.length < 1) {
+            onlines = [];
+            playersData = [];
+            dicedNum = 0;
+            latestRoller = '';
         }
     } catch (error) {
         console.log(error);
@@ -109,11 +120,46 @@ exports.quitGame = (req, res) => {
 exports.getGameState = (req, res) => {
 
     const data = {
-        players: onlines
+        gameState: {
+            playersData: playersData,
+            rolledNum: dicedNum,
+            latestRoller: latestRoller
+        }
     }
 
     try {
         res.status(200).json(data);
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+exports.updateGameState = (req, res) => {
+
+    const index = req.body.index;
+    const username = req.body.username;
+    const piecePos = req.body.piecePos;
+
+    if (playersData[index].username === username) {
+        playersData[index].piecePos = piecePos;
+    }
+
+    try {
+        res.status(200).send("Sucess. Game State updated");
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+exports.rollDice = (req, res) => {
+
+    latestRoller = req.user.username
+    const max = 6;
+    const min = 1;
+    dicedNum = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    try {
+        res.status(200).send(`${latestRoller} has rolled the dice.`);
     } catch (error) {
         console.log(error);
     }
