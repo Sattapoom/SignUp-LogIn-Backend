@@ -153,7 +153,13 @@ exports.updateGameState = (req, res) => {
 
 exports.rollDice = (req, res) => {
 
-    latestRoller = req.user.username
+    if(latestRoller && latestRoller === req.user.username){
+        latestRoller = `(R)-${req.user.username}`
+    }
+    else{
+        latestRoller = req.user.username
+    }
+
     const max = 6;
     const min = 1;
     dicedNum = Math.floor(Math.random() * (max - min + 1)) + min;
